@@ -1,0 +1,174 @@
+= MessageChannel
+
+Yet another observer pattern library via Observable, DRb, MQTT, Redis and Mongo.
+
+== Installation
+
+Add this line to your application's Gemfile:
+
+[source,ruby]
+----
+gem 'message_channel'
+----
+
+And then execute:
+
+    $ bundle install
+
+Or install it yourself as:
+
+    $ gem install message_channel
+    or
+    $ gem install -l message_channel-x.x.x.gem
+
+== Usage
+
+=== Example 1
+
+[source,ruby]
+----
+require  "message_channel"
+
+Signal.trap( :INT ) do
+  exit
+end
+
+channel  =  MessageChannel.new
+
+channel.listen( "hello" ) do |topic, **items|
+  p [topic, items]
+end
+
+while  true
+  channel.notify  "hello", {at: Time.now.to_s}
+  sleep  1
+end
+----
+
+=== Example 2
+
+[source,ruby]
+----
+require  "message_channel"
+
+Signal.trap( :INT ) do
+  exit
+end
+
+channel  =  MessageChannel.new
+
+Thread.start do
+  while  true
+    topic, items  =  channel.listen( "hello" )
+    p [topic, items]
+  end
+end
+
+Thread.start do
+  while  true
+    channel.notify  "hello", {at: Time.now.to_s}
+    sleep  1
+  end
+end
+
+sleep
+----
+
+== Reference
+
+=== Create a new MessageChannel::* with conditions.
+
+[source,ruby]
+----
+MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: nil, name: nil )
+----
+
+* Result:
+  ** MessageChannel::* object.
+
+* Parameter:
+  ** uri: scheme://host:port/params (default: nil)
+    *** "observer"
+    *** "druby://127.0.0.1:8787"
+    *** "mqtt://127.0.0.1:1883"
+    *** "redis://127.0.0.1:6379/0"
+    *** "mongodb://127.0.0.1:27017/test?size=4000&name=_event_queue"
+  ** type: Channel type. (default: "observer")
+    *** "observer"
+    *** "druby"
+    *** "mqtt"
+    *** "redis"
+    *** "mongodb"
+  ** host: Service host. (default: nil)
+  ** port: Service port. (default: nil)
+  ** db: Database name. (default: "test")
+  ** size: Queue Size. (default: 4000)
+  ** name: Queue Name. (default: "_event_queue")
+
+=== Notify through the channel.
+
+[source,ruby]
+----
+MessageChannel::Observer#notify( topic, **items )
+MessageChannel::Druby#notify( topic, **items )
+MessageChannel::Mqtt#notify( topic, **items )
+MessageChannel::Redis#notify( topic, **items )
+MessageChannel::Mongodb#notify( topic, **items )
+----
+
+* Result:
+  ** nil.
+
+* Parameter:
+  ** topic: a notification topic.
+  ** items: notification items.
+
+=== Listen to notification through the channel.
+
+[source,ruby]
+----
+MessageChannel::Observer#listen( *patterns, &block )
+MessageChannel::Druby#listen( *patterns, &block )
+MessageChannel::Mqtt#listen( *patterns, &block )
+MessageChannel::Redis#listen( *patterns, &block )
+MessageChannel::Mongodb#listen( *patterns, &block )
+----
+
+* Result:
+  ** with block: (Non-blocing Mode)
+    *** nil.
+  ** without block: (Blocking Mode)
+    *** topic: a notified topic.
+    *** items: notified items.
+
+* Parameter:
+  ** patterns: mask patterns.
+
+* Block Parameter:
+  ** topic: a notified topic.
+  ** items: notified items.
+
+=== Unlisten to notification.
+
+[source,ruby]
+----
+MessageChannel::Observer#unlisten( *patterns )
+MessageChannel::Druby#unlisten( *patterns )
+MessageChannel::Mqtt#unlisten( *patterns )
+MessageChannel::Redis#unlisten( *patterns )
+MessageChannel::Mongodb#unlisten( *patterns )
+----
+
+* Result:
+  ** nil.
+
+* Parameter:
+  ** patterns: mask patterns.
+
+== Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/arimay/message_channel.
+
+== License
+
+The gem is available as open source under the terms of the http://opensource.org/licenses/MIT[MIT License].
