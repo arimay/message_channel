@@ -1,7 +1,15 @@
 = MessageChannel
 
-オブザーバパターンライブラリのひとつ. 
-Observable, DRb, MQTT, Redis and Mongo を用いる.  
+オブザーバパターンライブラリのひとつ. Observable, DRb, MQTT, Redis, Mongo を用いる.  
+
+== 特徴
+
+* スレッドベースのオブザーバパターンライブラリ.
+* Obserbable, DRb, MQTT, Redis および Mongo のラッパーとして実装.
+* Observer はソケットを使わずに通信できる.
+* DRb は外部サーバを使わずにプロセス間通信できる.
+* MQTT, Redis, Mongo は通信できるアプリを他言語でも作成できる.
+* トピックは文字列として、データは JSON 化した文字列として配信する.
 
 == 導入
 
@@ -173,3 +181,5 @@ MessageChannel::Mongodb#unlisten( *patterns )
 == ライセンス
 
 この Gem は、 http://opensource.org/licenses/MIT[MITライセンス] の条件に基づいてオープンソースとして入手できる.
+
+Copyright (c) ARIMA Yasuhiro <arima.yasuhiro@gmail.com>

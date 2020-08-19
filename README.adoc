@@ -2,6 +2,15 @@
 
 Yet another observer pattern library via Observable, DRb, MQTT, Redis and Mongo.
 
+== Features
+
+* Thread based observer pattern library.
+* Implemented as a wrapper for Obserbable, DRb, MQTT, Redis and Mongo.
+* Observer can communicate without using sockets.
+* DRb can communicate between processes without using an external server.
+* MQTT, Redis, and Mongo can create apps that can communicate in other languages.
+* Distribute topic as a character string and data as a JSON-encoded character string.
+
 == Installation
 
 Add this line to your application's Gemfile:
@@ -172,3 +181,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/arimay
 == License
 
 The gem is available as open source under the terms of the http://opensource.org/licenses/MIT[MIT License].
+
+Copyright (c) ARIMA Yasuhiro <arima.yasuhiro@gmail.com>
