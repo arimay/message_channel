@@ -44,8 +44,8 @@ module MessageChannel
 
     def get_event_tail( event_queue )
       filter  =  {}
-      if  enum  =  event_queue.find( {}, { sort: { "$natural" => -1 } } ).to_enum
-        if  doc  =  enum.next    rescue  nil
+      if ( enum  =  event_queue.find( {}, { sort: { "$natural" => -1 } } ).to_enum )
+        if ( doc  =  enum.next    rescue  nil )
           filter  =  { "_id"=>{ "$gt"=>doc["_id"] } }
         end
       end
@@ -56,20 +56,21 @@ module MessageChannel
       queue  =  Queue.new
       threads  =  {}
       patterns.each do |pattern|
-        threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           event_queue  =  get_event_queue
           event_tail  =  get_event_tail( event_queue )
           begin
-            while  doc  =  event_tail.next
+            while ( doc  =  event_tail.next )
               items  =  JSON.parse( doc.to_json, symbolize_names: true )
               topic  =  items[:topic]
-              if File.fnmatch( pattern, topic, File::FNM_PATHNAME )
+              if File.fnmatch( pttrn, topic, File::FNM_PATHNAME )
                 items.delete( :_id )
                 items.delete( :topic )
                 queue.push  [topic, items]
               end
             end
-          ensure
+          rescue => e
+            nil
           end
         end
       end
@@ -84,20 +85,21 @@ module MessageChannel
 
     def listen_each( *patterns, &block )
       patterns.each do |pattern|
-        @threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        @threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           begin
             event_queue  =  get_event_queue
             event_tail  =  get_event_tail( event_queue )
-            while  doc  =  event_tail.next
+            while ( doc  =  event_tail.next )
               items  =  JSON.parse( doc.to_json, symbolize_names: true )
               topic  =  items[:topic]
-              if File.fnmatch( pattern, topic, File::FNM_PATHNAME )
+              if File.fnmatch( pttrn, topic, File::FNM_PATHNAME )
                 items.delete( :_id )
                 items.delete( :topic )
                 block.call( topic, items )
               end
             end
-          ensure
+          rescue => e
+            nil
           end
         end
       end

@@ -8,7 +8,7 @@ task :default => :spec
 
 class Bundler::GemHelper
 
-  def git_archive( dir = "../#{Time.now.strftime("%Y%m%d")}" )
+  def git_archive( dir = "../zip" )
     FileUtils.mkdir_p  dir
     dest_path  =  File.join(dir, "#{name}-#{version}.zip")
     cmnd  =  "git archive --format zip --prefix=#{name}/ HEAD > #{dest_path}"

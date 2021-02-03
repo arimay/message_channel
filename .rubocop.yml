@@ -1,0 +1,73 @@
+
+AllCops:
+  Exclude:
+    - '.*'
+    - '*'
+    - '*.gemspec'
+    - 'Gemfile*'
+    - 'bin/**'
+    - 'exe/**'
+    - 'config/**/*'
+    - 'spec/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+  TargetRubyVersion: 2.7
+
+Layout/ExtraSpacing:
+  Enabled: false
+
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+
+Layout/SpaceInsideParens:
+  Enabled: false
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+ 
+Layout/SpaceInsideRangeLiteral:
+  Enabled: false
+
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: false
+
+Layout/SpaceInsideStringInterpolation:
+  Enabled: false
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Lint/EmptyWhen:
+  Enabled: false
+
+Lint/ReturnInVoidContext:
+  Enabled: false
+
+Lint/UselessAssignment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+  Max: 120
+
+Metrics/MethodLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+

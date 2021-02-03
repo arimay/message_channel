@@ -1,6 +1,4 @@
 module MessageChannel
-  class Error < StandardError; end
-
   module Base
 
     # uri:

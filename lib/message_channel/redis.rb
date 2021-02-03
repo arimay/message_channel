@@ -16,20 +16,19 @@ module MessageChannel
       queue  =  Queue.new
       threads  =  {}
       patterns.each do |pattern|
-        threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           redis  =  ::Redis.new( host: @host, port: @port, db: @db )
           begin
-            redis.psubscribe( pattern ) do |on|
-              on.pmessage do |pattern, channel, message|
+            redis.psubscribe( pttrn ) do |on|
+              on.pmessage do |ptn, channel, message|
                 items  =  JSON.parse( message, symbolize_names: true )
-                redis.punsubscribe( topic )    rescue  nil
+                redis.punsubscribe( ptn )    rescue  nil
                 queue.push  [channel, items]
               end
             end
           rescue  ::Redis::BaseConnectionError => error
             sleep 1
             retry
-          ensure
           end
         end
       end
@@ -44,11 +43,11 @@ module MessageChannel
 
     def listen_each( *patterns, &block )
       patterns.each do |pattern|
-        @threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        @threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           redis  =  ::Redis.new( host: @host, port: @port, db: @db )
           begin
-            redis.psubscribe( pattern ) do |on|
-              on.pmessage do |pattern, channel, message|
+            redis.psubscribe( pttrn ) do |on|
+              on.pmessage do |_ptn, channel, message|
                 items  =  JSON.parse( message, symbolize_names: true )
                 block.call( channel, items )
               end
@@ -57,7 +56,7 @@ module MessageChannel
             sleep 1
             retry
           ensure
-            redis.punsubscribe( topic )    rescue  nil
+            redis.punsubscribe( pttrn )    rescue  nil
           end
         end
       end

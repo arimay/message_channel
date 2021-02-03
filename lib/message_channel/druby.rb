@@ -49,7 +49,7 @@ module MessageChannel
 
       def publish( topic, message )
         @mutex.synchronize do
-          @patterns.each do |queue_id, items|
+          @patterns.each do |_queue_id, items|
             pattern, queue  =  *items
             if File.fnmatch( pattern, topic, File::FNM_PATHNAME )
               queue.push( [topic, message] )
@@ -94,7 +94,7 @@ module MessageChannel
       end
 
       def unlisten( pattern )
-        if  queue_id  =  @queue_ids[pattern]
+        if ( queue_id  =  @queue_ids[pattern] )
           @drb.unsubscribe( queue_id )
           @queue_ids.delete( pattern )    rescue  nil
         end
@@ -118,10 +118,10 @@ module MessageChannel
       queue  =  Queue.new
       threads  =  {}
       patterns.each do |pattern|
-        threads[pattern]  =  Thread.start(pattern) do |pattern|
+        threads[pattern]  =  Thread.start( pattern ) do |pttrn|
           agent  =  Agent.new
           begin
-            topic, message  =  * agent.listen_once( pattern )
+            topic, message  =  * agent.listen_once( pttrn )
             items  =  JSON.parse( message, symbolize_names: true )
             queue.push( [topic, items] )
           rescue => error
@@ -142,9 +142,9 @@ module MessageChannel
 
     def listen_each( *patterns, &block )
       patterns.each do |pattern|
-        @threads[pattern]  =  Thread.start(pattern) do |pattern|
+        @threads[pattern]  =  Thread.start( pattern ) do |pttrn|
           begin
-            @agent.listen_each( pattern ) do |topic, message| 
+            @agent.listen_each( pttrn ) do |topic, message|
               items  =  JSON.parse( message, symbolize_names: true )
               block.call( topic, items )
             end

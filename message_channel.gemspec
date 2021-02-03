@@ -7,9 +7,9 @@ Gem::Specification.new do |spec|
   spec.email         = ["arima.yasuhiro@gmail.com"]
 
   spec.summary       = %q{ Wrapper library for publish/subscribe pattern. }
-  spec.description   = %q{ Yet another observer pattern wrapper library via Observable, DRb, MQTT, Redis and Mongo. }
+  spec.description   = %q{ Yet another observer pattern wrapper library via Observable, DRb, MQTT, Redis or Mongo. }
   spec.homepage      = "https://github.com/arimay/message_channel"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
+  spec.license       = "MIT"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "msgpack"
   spec.add_development_dependency "mongo"
 
-  spec.add_development_dependency "rake", "~> 12.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
 end

@@ -15,15 +15,16 @@ module MessageChannel
       queue  =  Queue.new
       threads  =  {}
       patterns.each do |pattern|
-        threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           mqtt  =  MQTT::Client.connect( @host, @port )
           begin
-            mqtt.get( pattern ) do |topic, message|
+            mqtt.get( pttrn ) do |topic, message|
               items  =  JSON.parse( message, symbolize_names: true )
               mqtt.disconnect    rescue  nil
               queue.push  [topic, items]
             end
-          ensure
+          rescue => e
+            nil
           end
         end
       end
@@ -38,10 +39,10 @@ module MessageChannel
 
     def listen_each( *patterns, &block )
       patterns.each do |pattern|
-        @threads[pattern]  =  ::Thread.start(pattern) do |pattern|
+        @threads[pattern]  =  ::Thread.start( pattern ) do |pttrn|
           mqtt  =  MQTT::Client.connect( @host, @port )
           begin
-            mqtt.get( pattern ) do |topic, message|
+            mqtt.get( pttrn ) do |topic, message|
               items  =  JSON.parse( message, symbolize_names: true )
               block.call( topic, items )
             end

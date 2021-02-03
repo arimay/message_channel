@@ -14,7 +14,7 @@ module MessageChannel
       end
     end
 
-    def initialize( **options )
+    def initialize( **_options )
       @asyncs  =  {}
       @awaits  =  {}
       @queues  =  {}
@@ -26,7 +26,7 @@ module MessageChannel
       items  =  JSON.parse( message, symbolize_names: true )
       @asyncs.keys.each do |pattern|
         if File.fnmatch( pattern, topic, File::FNM_PATHNAME )
-          if  action  =  @asyncs[pattern]
+          if ( action  =  @asyncs[pattern] )
             action.call( topic, items )
           end
         end
@@ -66,7 +66,7 @@ module MessageChannel
 
     def unlisten( **patterns )
       patterns.each do |pattern|
-        if  action  =  @asyncs[pattern]
+        if ( action  =  @asyncs[pattern] )
           @asyncs.delete( pattern )
         end
       end
