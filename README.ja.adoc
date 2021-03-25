@@ -1,14 +1,14 @@
 = MessageChannel
 
-オブザーバパターンライブラリのひとつ. Observable, DRb, MQTT, Redis, Mongo を用いる.  
+オブザーバパターンライブラリのひとつ. Observable, DRb, MQTT, Redis を用いる.
 
 == 特徴
 
 * スレッドベースのオブザーバパターンライブラリ.
-* Obserbable, DRb, MQTT, Redis および Mongo のラッパーとして実装.
+* Obserbable, DRb, MQTT, Redis のラッパーとして実装.
 * Observer はソケットを使わずに通信できる.
 * DRb は外部サーバを使わずにプロセス間通信できる.
-* MQTT, Redis, Mongo は通信できるアプリを他言語でも作成できる.
+* MQTT と Redis は通信できるアプリを他言語でも作成できる.
 * トピックは文字列として、データは JSON 化した文字列として配信する.
 
 == 導入
@@ -89,7 +89,7 @@ sleep
 
 [source,ruby]
 ----
-MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: nil, name: nil )
+MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil )
 ----
 
 * Result:
@@ -101,18 +101,14 @@ MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: n
     *** "druby://127.0.0.1:8787"
     *** "mqtt://127.0.0.1:1883"
     *** "redis://127.0.0.1:6379/0"
-    *** "mongodb://127.0.0.1:27017/test?size=4000&name=_event_queue"
   ** type: Channel type. (default: "observer")
     *** "observer"
     *** "druby"
     *** "mqtt"
     *** "redis"
-    *** "mongodb"
   ** host: サービスホスト. (default: nil)
   ** port: サービスポート. (default: nil)
-  ** db: データベース名. (default: "test")
-  ** size: キューサイズ. (default: 4000)
-  ** name: キュー名. (default: "_event_queue")
+  ** db: データベース. (default: nil)
 
 === チャネル経由で通知.
 
@@ -122,7 +118,6 @@ MessageChannel::Observer#notify( topic, **items )
 MessageChannel::Druby#notify( topic, **items )
 MessageChannel::Mqtt#notify( topic, **items )
 MessageChannel::Redis#notify( topic, **items )
-MessageChannel::Mongodb#notify( topic, **items )
 ----
 
 * Result:
@@ -136,26 +131,32 @@ MessageChannel::Mongodb#notify( topic, **items )
 
 [source,ruby]
 ----
-MessageChannel::Observer#listen( *patterns, &block )
-MessageChannel::Druby#listen( *patterns, &block )
-MessageChannel::Mqtt#listen( *patterns, &block )
-MessageChannel::Redis#listen( *patterns, &block )
-MessageChannel::Mongodb#listen( *patterns, &block )
+MessageChannel::Observer#listen( *patterns, timeout: nil, &block )
+MessageChannel::Druby#listen( *patterns, timeout: nil, &block )
+MessageChannel::Mqtt#listen( *patterns, timeout: nil, &block )
+MessageChannel::Redis#listen( *patterns, timeout: nil, &block )
 ----
 
-* Result:
-  ** ブロック引数あり: (Non-blocing Mode)
+* ブロック引数あり: (非同期)
+  ** Result:
     *** nil.
-  ** ブロック引数なし: (Blocking Mode)
+
+  ** Parameter:
+    *** patterns: マスクパターンの配列.
+
+* ブロック引数なし: (待機)
+  ** Result:
+    タイムアウトなら nil を返す.
     *** topic: 通知トピック.
     *** items: 通知アイテム.
 
-* Parameter:
-  ** patterns: マスクパターンの配列.
+  ** Parameter:
+    *** patterns: マスクパターンの配列.
+    *** timeout: nil または待機秒数.
 
-* Block Parameter:
-  ** topic: 通知トピック.
-  ** items: 通知アイテム.
+  ** Block Parameter:
+    *** topic: 通知トピック.
+    *** items: 通知アイテム.
 
 === 通知待機を解除.
 
@@ -165,7 +166,6 @@ MessageChannel::Observer#unlisten( *patterns )
 MessageChannel::Druby#unlisten( *patterns )
 MessageChannel::Mqtt#unlisten( *patterns )
 MessageChannel::Redis#unlisten( *patterns )
-MessageChannel::Mongodb#unlisten( *patterns )
 ----
 
 * Result:

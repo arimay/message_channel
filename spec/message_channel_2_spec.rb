@@ -1,3 +1,6 @@
+require  "date"
+require  "time"
+
 RSpec.describe MessageChannel do
 
   [
@@ -16,19 +19,12 @@ RSpec.describe MessageChannel do
     [ MessageChannel::Redis,    "redis://127.0.0.1"                                           ],
     [ MessageChannel::Redis,    "redis://127.0.0.1:6379"                                      ],
     [ MessageChannel::Redis,    "redis://127.0.0.1:6379/1"                                    ],
-    [ MessageChannel::Mongodb,  "mongodb"                                                     ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1"                                         ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1:27017"                                   ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1:27017/test"                              ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1:27017/test?size=8000"                    ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1:27017/test?name=_event_queue"            ],
-    [ MessageChannel::Mongodb,  "mongodb://127.0.0.1:27017/test?size=8000&name=_event_queue"  ],
   ].each do |klass, uri|
-    it ["#listen with block", uri] do
+    it ["#listen async", uri] do
       channel  =  MessageChannel.new( uri )
 
       channel.listen( "hello" ) do |topic, items|
-        p [topic, items]
+        puts [topic, items].inspect
         expect( topic ).to  eq( "hello" )
         expect( Time.parse(items[:at]).class ).to  eq( Time )
       end
@@ -36,6 +32,8 @@ RSpec.describe MessageChannel do
 
       channel.notify( "hello",  at: Time.now.to_s )
       sleep  1
+
+      channel.unlisten( "hello" )
     end
   end
 

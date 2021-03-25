@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["arima.yasuhiro@gmail.com"]
 
   spec.summary       = %q{ Wrapper library for publish/subscribe pattern. }
-  spec.description   = %q{ Yet another observer pattern wrapper library via Observable, DRb, MQTT, Redis or Mongo. }
+  spec.description   = %q{ Yet another observer pattern wrapper library via Observable, DRb, MQTT, Redis. }
   spec.homepage      = "https://github.com/arimay/message_channel"
   spec.license       = "MIT"
 
@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "mqtt"
   spec.add_development_dependency "redis"
   spec.add_development_dependency "msgpack"
-  spec.add_development_dependency "mongo"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"

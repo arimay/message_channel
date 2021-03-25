@@ -6,9 +6,8 @@ module MessageChannel
     #  "druby://127.0.0.1:8787"
     #  "mqtt://127.0.0.1:1883"
     #  "redis://127.0.0.1:6379/0"
-    #  "mongodb://127.0.0.1:27017/test?size=4000&name=_event_queue"
 
-    def new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: nil, name: nil )
+    def new( uri = nil, type: nil, host: nil, port: nil, db: nil )
       if  uri
         uris  =  URI.parse( uri )
         if  uris.scheme.nil?  &&  uris.host.nil?  &&  uris.port.nil?  &&  uris.path
@@ -20,8 +19,6 @@ module MessageChannel
           port  =  uris.port  ||  port
           params  =  uris.path.gsub(/^\//, "").split('/')
           query  =  Hash[ URI::decode_www_form(uris.query) ]  rescue  {}
-          size  =  query[:size]  ||  size
-          name  =  query[:name]  ||  name
         end
       else
         parans  =  []
@@ -39,11 +36,6 @@ module MessageChannel
       when  "redis"
         options[:db]  =  params.shift  ||  db
         MessageChannel::Redis.new( **options )
-      when  "mongodb"
-        options[:db]  =  params.shift  ||  db
-        options[:size]  =  size
-        options[:name]  =  name
-        MessageChannel::Mongodb.new( **options )
       end
     end
 

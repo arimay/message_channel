@@ -13,6 +13,5 @@ module MessageChannel
   autoload  :Druby, "message_channel/druby"
   autoload  :Mqtt, "message_channel/mqtt"
   autoload  :Redis, "message_channel/redis"
-  autoload  :Mongodb, "message_channel/mongodb"
 end
 

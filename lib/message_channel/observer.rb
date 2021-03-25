@@ -1,5 +1,6 @@
 require  "observer"
 require  "json"
+require  "timeout"
 
 module MessageChannel
 
@@ -54,17 +55,27 @@ module MessageChannel
       end
     end
 
-    def listen( *patterns, &block )
-      if block.nil?
-        listen_once( *patterns )
-      else
+    def listen( *patterns, timeout: nil, &block )
+      if block_given?
         listen_each( *patterns ) do |topic, items|
           block.call( topic, items )
         end
+        return  nil
+      end
+      if timeout.nil? || ( timeout.is_a?( Numeric ) && timeout >= 0 )
+        begin
+          Timeout.timeout( timeout ) do
+            listen_once( *patterns )
+          end
+        rescue  Timeout::Error
+          return  nil
+        end
+      else
+        raise  ArgumentError, "timeout: %s" % timeout
       end
     end
 
-    def unlisten( **patterns )
+    def unlisten( *patterns )
       patterns.each do |pattern|
         if ( action  =  @asyncs[pattern] )
           @asyncs.delete( pattern )

@@ -1,14 +1,14 @@
 = MessageChannel
 
-Yet another observer pattern library via Observable, DRb, MQTT, Redis and Mongo.
+Yet another observer pattern library via Observable, DRb, MQTT, Redis.
 
 == Features
 
 * Thread based observer pattern library.
-* Implemented as a wrapper for Obserbable, DRb, MQTT, Redis and Mongo.
+* Implemented as a wrapper for Obserbable, DRb, MQTT, Redis.
 * Observer can communicate without using sockets.
 * DRb can communicate between processes without using an external server.
-* MQTT, Redis, and Mongo can create apps that can communicate in other languages.
+* MQTT and Redis can create apps that can communicate in other languages.
 * Distribute topic as a character string and data as a JSON-encoded character string.
 
 == Installation
@@ -89,7 +89,7 @@ sleep
 
 [source,ruby]
 ----
-MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: nil, name: nil )
+MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil )
 ----
 
 * Result:
@@ -101,18 +101,14 @@ MessageChannel.new( uri = nil, type: nil, host: nil, port: nil, db: nil, size: n
     *** "druby://127.0.0.1:8787"
     *** "mqtt://127.0.0.1:1883"
     *** "redis://127.0.0.1:6379/0"
-    *** "mongodb://127.0.0.1:27017/test?size=4000&name=_event_queue"
   ** type: Channel type. (default: "observer")
     *** "observer"
     *** "druby"
     *** "mqtt"
     *** "redis"
-    *** "mongodb"
   ** host: Service host. (default: nil)
   ** port: Service port. (default: nil)
-  ** db: Database name. (default: "test")
-  ** size: Queue Size. (default: 4000)
-  ** name: Queue Name. (default: "_event_queue")
+  ** db: Database. (default: nil)
 
 === Notify through the channel.
 
@@ -122,7 +118,6 @@ MessageChannel::Observer#notify( topic, **items )
 MessageChannel::Druby#notify( topic, **items )
 MessageChannel::Mqtt#notify( topic, **items )
 MessageChannel::Redis#notify( topic, **items )
-MessageChannel::Mongodb#notify( topic, **items )
 ----
 
 * Result:
@@ -136,26 +131,32 @@ MessageChannel::Mongodb#notify( topic, **items )
 
 [source,ruby]
 ----
-MessageChannel::Observer#listen( *patterns, &block )
-MessageChannel::Druby#listen( *patterns, &block )
-MessageChannel::Mqtt#listen( *patterns, &block )
-MessageChannel::Redis#listen( *patterns, &block )
-MessageChannel::Mongodb#listen( *patterns, &block )
+MessageChannel::Observer#listen( *patterns, timeout: nil, &block )
+MessageChannel::Druby#listen( *patterns, timeout: nil, &block )
+MessageChannel::Mqtt#listen( *patterns, timeout: nil, &block )
+MessageChannel::Redis#listen( *patterns, timeout: nil, &block )
 ----
 
-* Result:
-  ** with block: (Non-blocing Mode)
+* with block: (async)
+  ** Result:
     *** nil.
-  ** without block: (Blocking Mode)
+
+  ** Parameter:
+    *** patterns: mask patterns.
+
+* without block: (await)
+  ** Result:
+    return nil if timeout.
     *** topic: a notified topic.
     *** items: notified items.
 
-* Parameter:
-  ** patterns: mask patterns.
+  ** Parameter:
+    *** patterns: mask patterns.
+    *** timeout: nil or wait second.
 
-* Block Parameter:
-  ** topic: a notified topic.
-  ** items: notified items.
+  ** Block Parameter:
+    *** topic: a notified topic.
+    *** items: notified items.
 
 === Unlisten to notification.
 
@@ -165,7 +166,6 @@ MessageChannel::Observer#unlisten( *patterns )
 MessageChannel::Druby#unlisten( *patterns )
 MessageChannel::Mqtt#unlisten( *patterns )
 MessageChannel::Redis#unlisten( *patterns )
-MessageChannel::Mongodb#unlisten( *patterns )
 ----
 
 * Result:

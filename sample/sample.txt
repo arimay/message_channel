@@ -21,11 +21,3 @@ URI defailt params for message_channel.
   "redis://127.0.0.1:6379"
   "redis://127.0.0.1:6379/1"
 
-  "mongodb"
-  "mongodb://127.0.0.1"
-  "mongodb://127.0.0.1:27017"
-  "mongodb://127.0.0.1:27017/test"
-  "mongodb://127.0.0.1:27017/test?size=8000"
-  "mongodb://127.0.0.1:27017/test?name=_event_queue"
-  "mongodb://127.0.0.1:27017/test?size=8000&name=_event_queue"
-
