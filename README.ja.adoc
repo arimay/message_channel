@@ -68,7 +68,7 @@ channel  =  MessageChannel.new
 
 Thread.start do
   while  true
-    topic, items  =  channel.listen( "hello" )
+    topic, items  =  channel.listen( "hello", timeout: 0.5 )
     p [topic, items]
   end
 end
@@ -76,7 +76,7 @@ end
 Thread.start do
   while  true
     channel.notify  "hello", {at: Time.now.to_s}
-    sleep  1
+    sleep  rand
   end
 end
 
