@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "mqtt"
   spec.add_development_dependency "redis"
-  spec.add_development_dependency "msgpack"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec"
